@@ -1,0 +1,15 @@
+Docker images
+
+docker ps
+Docker pull nginx
+docker run --name nginx -d -p 8080:80 nginx
+Docker stop nginx
+docker container start nginx
+
+
+nginx
+
+
+
+docker build -t docker-container-nodejs .
+docker run --name node -d -p 5001:5050 docker-container-nodejs
