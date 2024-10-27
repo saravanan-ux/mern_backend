@@ -15,7 +15,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js 18
+      # Set up Node.js 21
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -32,6 +32,7 @@ jobs:
 
       # Build phase (optional)
       - name: Build project
+        id: build
         run: |
           echo "Build started on $(date)"
           if npm run build; then
@@ -47,11 +48,12 @@ jobs:
 
       # Upload artifacts (optional, if you want to store the build output)
       - name: Upload build artifacts
+        if: success()
         uses: actions/upload-artifact@v3
         with:
           name: build-output
           path: |
-            ./dist/**      # Change 'dist' to your actual output directory
+            ./dist/**      # Replace 'dist' with your actual output directory if needed
             !**/*:*        # Exclude files with invalid characters
 
       # Set up Docker Buildx (for multi-platform builds)
@@ -72,4 +74,4 @@ jobs:
           context: .              # Context is the root of your repository
           file: ./Dockerfile       # Path to your Dockerfile
           push: true               # Push image to Docker Hub
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/DockerApp:latest  # Replace 'your-repo-name' with your Docker Hub repository name
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/JarApp:latest 
