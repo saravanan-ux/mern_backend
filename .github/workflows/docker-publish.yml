@@ -74,4 +74,4 @@ jobs:
           context: .              # Context is the root of your repository
           file: ./Dockerfile       # Path to your Dockerfile
           push: true               # Push image to Docker Hub
-          tags: ${{ secrets.Docker }}/JarApp:latest # Use your Docker Hub username and repository name
+          tags: ${{ secrets.Docker }}/jarapp:latest # Use your Docker Hub username and repository name
