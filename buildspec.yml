@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '21'
+          node-version: '18'
           cache: 'npm'  # Caches `node_modules` automatically
 
       # Install dependencies
@@ -30,11 +30,12 @@ jobs:
       - name: Pre-build step
         run: echo "Installing source NPM dependencies..."
 
-      # Build phase
+      # Build phase (optional)
       - name: Build project
         run: |
           echo "Build started on $(date)"
-          npm run build || echo "Skipping build as no build script found."
+          # Commenting out npm run build if there's no build step in the package.json
+          # npm run build
           npm prune --production
 
       # Post-build phase
