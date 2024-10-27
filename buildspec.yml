@@ -1,26 +1,50 @@
-version: 0.2
+name: Node.js Build
 
-phases:
-  install:
-    runtime-versions:
-      nodejs: 18  
-    commands:
-      - npm install
-  pre_build:
-    commands:
-      - echo Installing source NPM dependencies...
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
   build:
-    commands:
-      - echo Build started on `date`
-      - npm run
-      - npm prune --production
-  post_build:
-    commands:
-      - echo Build completed on `date`
-artifacts:
-  type: zip
-  files:
-    - '**/*'
-cache:
-  paths:
-    - node_modules
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js 18
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '21'
+          cache: 'npm'  # Caches `node_modules` automatically
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Pre-build phase
+      - name: Pre-build step
+        run: echo "Installing source NPM dependencies..."
+
+      # Build phase
+      - name: Build project
+        run: |
+          echo "Build started on $(date)"
+          npm run build
+          npm prune --production
+
+      # Post-build phase
+      - name: Post-build step
+        run: echo "Build completed on $(date)"
+
+      # Upload artifacts (optional, if you want to store the build output)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: "**/*"  # Include all files and directories
+
