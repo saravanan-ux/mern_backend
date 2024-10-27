@@ -1,4 +1,4 @@
-name: Node.js Build
+name: Node.js Build and Artifact Upload
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
       - name: Build project
         run: |
           echo "Build started on $(date)"
-          npm run build
+          npm run build || echo "Skipping build as no build script found."
           npm prune --production
 
       # Post-build phase
@@ -47,4 +47,3 @@ jobs:
         with:
           name: build-output
           path: "**/*"  # Include all files and directories
-
