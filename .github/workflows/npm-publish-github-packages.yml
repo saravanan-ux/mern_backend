@@ -50,4 +50,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-output
-          path: "**/*"  # Include all files and directories
+          path: |
+            ./dist/**      # Change 'dist' to your actual output directory
+            !**/*:*        # Exclude files with invalid characters
