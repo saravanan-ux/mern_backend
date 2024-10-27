@@ -1,0 +1,67 @@
+name: Node.js Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js 18
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '21'
+          cache: 'npm'  # Caches `node_modules` automatically
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Pre-build phase
+      - name: Pre-build step
+        run: echo "Installing source NPM dependencies..."
+
+      # Build phase
+      - name: Build project
+        run: |
+          echo "Build started on $(date)"
+          npm run build
+          npm prune --production
+
+      # Post-build phase
+      - name: Post-build step
+        run: echo "Build completed on $(date)"
+
+      # Upload artifacts (optional, if you want to store the build output)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: "**/*"  # Include all files and directories
+
+
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
