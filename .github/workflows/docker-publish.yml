@@ -64,14 +64,15 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.Docker }}
-          password: ${{ secrets.Docker_P }}
+           username: ${{ secrets.DOCKER_USERNAME }}  # Replace with your Docker Hub username secret
+          password: ${{ secrets.DOCKER_PASSWORD }}  # Replace with your Docker Hub password secret
 
-      # Build and push Docker image
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3
-        with:
-          context: .              # Context is the root of your repository
-          file: ./Dockerfile       # Path to your Dockerfile
-          push: true               # Push image to Docker Hub
-          tags: ${{ secrets.Docker }}/jarapp:latest # Use your Docker Hub username and repository name
+      # Step 7: Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/react-app:latest .
+
+      # Step 8: Push Docker image to Docker Hub
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/react-app:latest
